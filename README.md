@@ -24,41 +24,27 @@ Positive CB → Surplus; Negative CB → Deficit
 
 The project follows **Hexagonal Architecture (Ports and Adapters)** for modularity and scalability.
 
-frontend/src/
-├── core/
-│ ├── domain/
-│ │ ├── entities/
-│ │ │ └── Route.ts
-│ │ └── value-objects/
-│ ├── application/
-│ │ ├── ports/
-│ │ │ ├── RouteRepositoryPort.ts
-│ │ │ └── BaselineRepositoryPort.ts
-│ │ └── use-cases/
-│ │ ├── GetRoutesUseCase.ts
-│ │ ├── SetBaselineUseCase.ts
-│ │ └── GetComparisonUseCase.ts
-│ └── types/
-│ └── index.ts
-│
-├── infrastructure/
-│ ├── adapters/
-│ │ ├── api/
-│ │ │ ├── RouteApiAdapter.ts
-│ │ │ └── BaselineApiAdapter.ts
-│ │ └── ui/
-│ │ └── components/
-│ │ ├── RoutesTable.tsx
-│ │ ├── CompareChart.tsx
-│ │ └── FilterBar.tsx
-│ └── http/
-│ └── apiClient.ts
-│
-├── ui/
-│ ├── components/
-│ │ ├── TabsLayout.tsx
-│ │ └── Dashboard.tsx
-│ └── pages/
-│ └── App.tsx
-│
-└── main.tsx
++---------------------------+
+|        Presentation       |  ← HTTP Controllers (Inbound)
+|   (API Layer)             |
++------------+--------------+
+             |
+             ↓
++---------------------------+
+|        Application        |  ← Use Cases (Business Logic)
+|   (Domain Services)       |
++------------+--------------+
+             |
+             ↓
++---------------------------+
+|         Domain            |  ← Pure Business Rules, Entities
+|   (Core Logic)            |
++------------+--------------+
+             |
+             ↓
++---------------------------+
+|      Infrastructure       |  ← Adapters (Outbound)
+|   (Database, External)    |
++---------------------------+
+
+
