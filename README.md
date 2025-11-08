@@ -22,29 +22,30 @@ Positive CB → Surplus; Negative CB → Deficit
 
 ## Architecture Summary (Haxagonal Structure)
 
-The project follows **Hexagonal Architecture (Ports and Adapters)** for modularity and scalability.
+This project follows **Hexagonal Architecture (Ports and Adapters)** for modularity, separation of concerns, and testability.
 
-+---------------------------+
-|        Presentation       |  ← HTTP Controllers (Inbound)
-|   (API Layer)             |
-+------------+--------------+
-             |
-             ↓
-+---------------------------+
-|        Application        |  ← Use Cases (Business Logic)
-|   (Domain Services)       |
-+------------+--------------+
-             |
-             ↓
-+---------------------------+
-|         Domain            |  ← Pure Business Rules, Entities
-|   (Core Logic)            |
-+------------+--------------+
-             |
-             ↓
-+---------------------------+
-|      Infrastructure       |  ← Adapters (Outbound)
-|   (Database, External)    |
-+---------------------------+
+### Layers Overview
+
+| Layer | Responsibility | Example |
+|-------|----------------|----------|
+| **Core Domain** | Business entities and rules | `Compliance`, `Route` |
+| **Application Layer** | Use-cases and service logic | `ComplianceService`, `PoolService` |
+| **Ports (Interfaces)** | Define contracts between domain and infrastructure | `ComplianceRepositoryPort` |
+| **Adapters (Implementations)** | Connect domain logic to infrastructure like DB or APIs | `CompliancePostgresAdapter` |
+| **Infrastructure** | Database, web server, external APIs | Prisma + Express/TSX setup |
+
+This design ensures:
+- Loose coupling between components  
+- Easy unit testing  
+- Domain logic independent of frameworks or databases  
+
+## Setup & Run Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/fuel-eu-compliance.git
+cd fuel-eu-compliance/backend
+```
 
 
