@@ -42,10 +42,40 @@ This design ensures:
 ## Setup & Run Instructions
 
 ### 1. Clone the Repository
-
 ```bash
 git clone https://github.com/your-username/fuel-eu-compliance.git
 cd fuel-eu-compliance/backend
 ```
+
+### 2. Install Dependencies
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+Create a .env file in /backend directory
+```bash
+DATABASE_URL="postgresql://<user>:<password>@<neon-host>/<database>?sslmode=require"
+```
+
+### 4. Apply Database Schema
+```bash
+npx prisma migrate reset --force
+npx prisma generate
+```
+
+### 5. Seed the Database
+```bash
+npm run seed
+```
+
+### 6. Run the Server
+```bash
+npm run dev
+```
+Server will start at http://localhost:5000
+
+
+
 
 
