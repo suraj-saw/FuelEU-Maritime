@@ -75,7 +75,29 @@ npm run dev
 ```
 Server will start at http://localhost:5000
 
+## How to Execute Tests
+You can test different modules via the frontend dashboard or directly through backend APIs.
 
+### Functional Tests
+1. Banking
+- Navigate to Banking tab.  
+- Enter Ship ID and Year.  
+- Click Load CB → Verify snapshot and adjusted CB.
+- Use Bank to store surplus CB.
+
+2. Pooling
+- Navigate to Pooling tab.  
+- Click Fetch Adjusted CBs → Displays all ships’ CBs for the selected year.  
+- Click Create & Allocate Pool → Redistributes surpluses among deficits.
+- Check the CB After column or backend logs for allocations.
+  
+3. Database Verification
+You can verify your data directly in the database using Prisma Studio:
+```bash
+npx prisma studio
+```
+
+## Screenshots & Sample Outputs
 
 
 
