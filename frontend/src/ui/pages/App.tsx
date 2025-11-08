@@ -1,4 +1,5 @@
 // frontend/src/ui/pages/App.tsx
+
 import { useEffect, useState } from "react";
 import { RouteApiAdapter } from "../../infrastructure/adapters/api/RouteApiAdapter";
 import { GetRoutesUseCase } from "../../core/application/use-cases/GetRoutesUseCase";
