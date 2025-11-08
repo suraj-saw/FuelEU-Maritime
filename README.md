@@ -99,5 +99,14 @@ npx prisma studio
 
 ## Screenshots & Sample Outputs
 
+1. Routes Tab
+<img width="1609" height="667" alt="image" src="https://github.com/user-attachments/assets/f446d95c-ba76-4374-b597-7223c4beb049" />
 
+2. Compare Tab
+<img width="1289" height="803" alt="image" src="https://github.com/user-attachments/assets/da39893a-644f-4a93-8c45-0273622423f9" />
 
+3. Banking Tab
+<img width="1286" height="517" alt="image" src="https://github.com/user-attachments/assets/5df430ef-8177-45f0-8f53-a0dd8e2bfe7d" />
+
+4. Pooling Tab
+<img width="1290" height="508" alt="image" src="https://github.com/user-attachments/assets/e9b910e9-838e-43ca-9011-b6d9210472ca" />
