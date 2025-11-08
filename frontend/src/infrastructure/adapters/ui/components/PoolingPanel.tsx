@@ -1,9 +1,7 @@
 // frontend/src/infrastructure/ui/components/PoolingPanel.tsx
-import { useEffect, useState } from 'react';
-import { ComplianceApiAdapter } from '../../api/ComplianceApiAdapter';
-import { apiClient } from '../../../http/apiClient';
-// import { ComplianceApiAdapter } from '../../adapters/api/ComplianceApiAdapter';
-// import { apiClient } from '../../http/apiClient';
+import { useEffect, useState } from "react";
+import { ComplianceApiAdapter } from "../../api/ComplianceApiAdapter";
+import { apiClient } from "../../../http/apiClient";
 
 const repo = new ComplianceApiAdapter();
 
@@ -22,7 +20,6 @@ export function PoolingPanel() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // clear on year change
     setMembers([]);
     setPoolId(null);
     setMessage(null);
@@ -33,7 +30,9 @@ export function PoolingPanel() {
     setMessage(null);
     try {
       // fetch routes via api client (routes are under /api/routes)
-      const { data: routes } = await apiClient.get('/routes', { params: { year } });
+      const { data: routes } = await apiClient.get("/routes", {
+        params: { year },
+      });
 
       // for each route compute adjusted CB via backend
       const tmp: Member[] = [];
@@ -45,12 +44,16 @@ export function PoolingPanel() {
         } catch {
           // fallback to computing cb if unavailable
           const cbRec = await repo.getCb(shipId, year).catch(() => null);
-          tmp.push({ routeId: r.routeId, shipId, cbBefore: cbRec?.cbGco2eq ?? 0 });
+          tmp.push({
+            routeId: r.routeId,
+            shipId,
+            cbBefore: cbRec?.cbGco2eq ?? 0,
+          });
         }
       }
       setMembers(tmp);
     } catch (e: any) {
-      setMessage('Failed to fetch routes / adjusted CBs');
+      setMessage("Failed to fetch routes / adjusted CBs");
     } finally {
       setLoading(false);
     }
@@ -61,7 +64,7 @@ export function PoolingPanel() {
     try {
       const sum = members.reduce((s, m) => s + m.cbBefore, 0);
       if (sum < 0) {
-        setMessage('Sum of adjusted CB is negative — cannot create pool.');
+        setMessage("Sum of adjusted CB is negative — cannot create pool.");
         return;
       }
       const { poolId } = await repo.createPool(year);
@@ -69,40 +72,58 @@ export function PoolingPanel() {
 
       // add members to pool on server
       for (const m of members) {
-        await apiClient.post('/pools/members', {
-          poolId,
-          shipId: m.shipId,
-          cbBefore: m.cbBefore,
-          routeId: m.routeId,
-        }).catch(() => {
-          // If this endpoint doesn't exist, fallback to adapter's addMember isn't implemented client-side;
-          // backend adapter `CompliancePostgresAdapter` has addMember but we don't expose a route in your code example.
-        });
+        await apiClient
+          .post("/pools/members", {
+            poolId,
+            shipId: m.shipId,
+            cbBefore: m.cbBefore,
+            routeId: m.routeId,
+          })
+          .catch(() => {});
       }
 
       // ask backend to allocate
       const allocation = await repo.allocatePool(poolId);
-      // allocation: array { shipId, cbAfter }
       const updated = members.map((m) => {
         const found = allocation.find((a: any) => a.shipId === m.shipId);
         return { ...m, cbAfter: found ? found.cbAfter : m.cbBefore };
       });
       setMembers(updated);
-      setMessage('Pool created and allocated.');
+      setMessage("Pool created and allocated.");
     } catch (e: any) {
-      setMessage(e?.response?.data?.error ?? e?.message ?? 'Failed to create pool');
+      setMessage(
+        e?.response?.data?.error ?? e?.message ?? "Failed to create pool"
+      );
     }
   };
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
-        <input type="number" value={year} onChange={(e) => setYear(Number(e.target.value))} className="px-3 py-1 w-28 border rounded" />
-        <button onClick={fetchAdjustedForYear} className="px-3 py-1 bg-blue-600 text-white rounded">Fetch adjusted CBs</button>
-        <button onClick={createPool} className="px-3 py-1 bg-green-600 text-white rounded" disabled={members.length === 0}>Create & Allocate Pool</button>
+        <input
+          type="number"
+          value={year}
+          onChange={(e) => setYear(Number(e.target.value))}
+          className="px-3 py-1 w-28 border rounded"
+        />
+        <button
+          onClick={fetchAdjustedForYear}
+          className="px-3 py-1 bg-blue-600 text-white rounded"
+        >
+          Fetch adjusted CBs
+        </button>
+        <button
+          onClick={createPool}
+          className="px-3 py-1 bg-green-600 text-white rounded"
+          disabled={members.length === 0}
+        >
+          Create & Allocate Pool
+        </button>
       </div>
 
-      {loading ? <p>Loading...</p> : (
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 mb-4">
             <thead className="bg-gray-50">
@@ -118,8 +139,16 @@ export function PoolingPanel() {
                 <tr key={m.shipId}>
                   <td className="px-4 py-2">{m.routeId}</td>
                   <td className="px-4 py-2">{m.shipId}</td>
-                  <td className={`px-4 py-2 ${m.cbBefore >= 0 ? 'text-green-600' : 'text-red-600'}`}>{m.cbBefore.toFixed(0)}</td>
-                  <td className="px-4 py-2">{m.cbAfter != null ? m.cbAfter.toFixed(0) : '-'}</td>
+                  <td
+                    className={`px-4 py-2 ${
+                      m.cbBefore >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {m.cbBefore.toFixed(0)}
+                  </td>
+                  <td className="px-4 py-2">
+                    {m.cbAfter != null ? m.cbAfter.toFixed(0) : "-"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -127,7 +156,11 @@ export function PoolingPanel() {
         </div>
       )}
 
-      {poolId && <div className="mb-4 text-sm">Pool ID: <strong>{poolId}</strong></div>}
+      {poolId && (
+        <div className="mb-4 text-sm">
+          Pool ID: <strong>{poolId}</strong>
+        </div>
+      )}
 
       {message && <div className="p-3 bg-gray-100 rounded">{message}</div>}
     </div>
